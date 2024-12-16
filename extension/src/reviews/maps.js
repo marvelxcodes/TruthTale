@@ -158,7 +158,10 @@ let googleMaps = async function () {
 
       ele.appendChild(addHTML());
       ele.appendChild(feedbackHTML());
-      ele.appendChild(errorHTML());
+      ele.appendChild(errorHTML({
+        review: reviewData.review,
+        Class: response.data.probability >= 0.5 ? "Real" : "Fake",
+      }));
     }
   });
 

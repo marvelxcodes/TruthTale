@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let errorHTML = () => {
+let errorHTML = ({ review, Class }) => {
   // Create modal background
   const modal = document.createElement("div");
   modal.id = "reportPopup";
@@ -201,63 +201,12 @@ let errorHTML = () => {
       }
 
       const report = {
-        class:classs,
-        review : review ,
-        message: reportMessage,
+        class: Class,
+        message: otherDetails,
+        review,
       };
 
       submitReport(report);
-    // Create a tooltip for displaying the reason
-    const tooltip = document.createElement("div");
-    tooltip.id = "tooltip";
-    tooltip.style.position = "absolute";
-    tooltip.style.backgroundColor = "#333";
-    tooltip.style.color = "#fff";
-    tooltip.style.padding = "5px 10px";
-    tooltip.style.borderRadius = "5px";
-    tooltip.style.display = "none";
-    tooltip.style.zIndex = "10002";
-    document.body.appendChild(tooltip);
-
-    // Function to show the tooltip
-    function showTooltip(event, message) {
-      tooltip.textContent = message;
-      tooltip.style.left = `${event.pageX + 10}px`;
-      tooltip.style.top = `${event.pageY + 10}px`;
-      tooltip.style.display = "block";
-    }
-
-    // Function to hide the tooltip
-    function hideTooltip() {
-      tooltip.style.display = "none";
-    }
-
-    // Add event listeners to reviews for showing/hiding the tooltip
-    const reviews = document.querySelectorAll(".review");
-    reviews.forEach((review) => {
-      review.addEventListener("mouseenter", (event) => {
-      const reason = review.getAttribute("data-reason");
-      showTooltip(event, reason);
-      });
-      review.addEventListener("mouseleave", hideTooltip);
-    });
-
-    // Function to set the background color based on fakeness level
-    function setReviewColor(review, fakenessLevel) {
-      if (fakenessLevel === "high") {
-      review.style.backgroundColor = "red";
-      } else if (fakenessLevel === "medium") {
-      review.style.backgroundColor = "yellow";
-      } else {
-      review.style.backgroundColor = "green";
-      }
-    }
-
-    // Example usage: setting colors and reasons for reviews
-    reviews.forEach((review) => {
-      const fakenessLevel = review.getAttribute("data-fakeness");
-      setReviewColor(review, fakenessLevel);
-    });
     } else {
       async function submitReport(reportData) {
         try {
@@ -272,9 +221,9 @@ let errorHTML = () => {
       }
 
       const report = {
-        class:classs,
-        review : review ,
+        class: Class,
         message: reportType.value,
+        review,
       };
 
       submitReport(report);

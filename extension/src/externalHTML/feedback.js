@@ -123,7 +123,7 @@ let feedbackHTML = () => {
     async function submitFeedback(feedbackData) {
       try {
         const response = await axios.post(
-          "http://localhost:5555/feedback",
+          "http://localhost:5000/feedback",
           feedbackData
         );
         console.log("Feedback submitted:", response.data);
