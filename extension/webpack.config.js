@@ -28,7 +28,7 @@ module.exports = {
       patterns: [
         { from: "src/manifest.json", to: "manifest.json" },
         { from: "src/popup.html", to: "popup.html" }, // Copy popup HTML
-        { from: "src/icon.png", to: "icon.png" }, // Copy icon (if any)
+        { from: "src/logo.png", to: "logo.png" }, // Copy icon (if any)
         // Add other static files like images or styles here
       ],
     }),
