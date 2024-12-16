@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Box Popup</title>
+  <style>
+    .review-box {
+      position: relative;
+      width: 300px;
+      padding: 20px;
+      margin: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .review-reason {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 320px; /* Position popup beside the review box */
+      width: 200px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      z-index: 10;
+    }
+
+    .review-box:hover .review-reason {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="review-box">
+    User Review: "Great product!"
+    <div class="review-reason">
+      Reason: "Verified purchase and good feedback."
+    </div>
+  </div>
+
+  <div class="review-box">
+    User Review: "Not satisfied."
+    <div class="review-reason">
+      Reason: "Issue with delivery."
+    </div>
+  </div>
+</body>
+</html>

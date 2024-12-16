@@ -2,9 +2,11 @@ from flask import Flask, request, jsonify
 from ml.model import predict
 from ml.train_model import retrain
 import sqlite3
+from flask_cors import CORS
 import csv
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/analyze', methods=['POST'])
 def analyze():

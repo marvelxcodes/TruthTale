@@ -1,6 +1,6 @@
 document.getElementById("toggle").addEventListener("change", async () => {
   if (document.getElementById("toggle").checked) {
-    document.getElementById("toggle").disabled = true;
+    //document.getElementById("toggle").disabled = true;
     try {
       const [tab] = await chrome.tabs.query({
         active: true,

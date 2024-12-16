@@ -57,14 +57,39 @@ class ReviewClassifier:
         if word_indicators:
             reasoning.append(f"Key words found: {', '.join(word_indicators)}")
         
-        vague_phrases = ['great product', 'highly recommended', 'best ever']
+        vague_phrases = ['great', 'highly', 'best', ]
         if any(phrase in self.review.lower() for phrase in vague_phrases):
             reasoning.append('Contains vague language.')
 
         if len(self.review.split()) < 5:
             reasoning.append('Review is too brief.')
 
-        promotional_phrases = ['buy now', 'limited time offer', 'free gift']
+        promotional_phrases = [
+    # Excitement
+    "amazing", "incredible", "sensational", "unbelievable", "exclusive",
+
+    # Urgency or Scarcity
+    "limited-time", "hurry", "now", "only", "last chance", "act fast",
+
+    # Value and Savings
+    "free", "bonus", "save", "discount", "affordable", "best deal",
+
+    # Trust and Credibility
+    "guaranteed", "proven", "trusted", "official", "risk-free", "certified",
+
+    # Benefits
+    "effortless", "easy", "powerful", "transformative", "convenient", "life-changing",
+
+    # Personal
+    "you", "yours", "tailored", "custom", "for you",
+
+    # Call to Action
+    "discover", "try", "shop", "download", "subscribe", "join now",
+
+    # Emotional or Aspirational
+    "dream", "luxury", "passion", "happiness", "confidence"
+]
+
         if any(phrase in self.review.lower() for phrase in promotional_phrases):
             reasoning.append('Contains promotional language.')
 

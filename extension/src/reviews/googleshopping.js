@@ -1,6 +1,6 @@
-import sentiment from "../models/PnNanalysis";
 import errorHTML from "../externalHTML/error";
 import feedbackHTML from "../externalHTML/feedback";
+import axios from "axios";
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -48,21 +48,28 @@ function addHTML() {
   return div;
 }
 
-function bulletpoint(bullet) {
-  let div = document.createElement("div");
+function bulletpoint(probability) {
 
-  div.setAttribute(
+  let i = document.createElement("i");
+
+  i.setAttribute("class", "fa-solid fa-circle");
+  i.setAttribute(
     "style",
     "display: flex; align-items: center; justify-content: end;position :relative ;top:-2px;right:-1px"
   );
-  div.setAttribute("id", "bulletpoint");
-
-  if (bullet) {
-    div.innerText = "🟢";
-  } else {
-    div.innerText = "🔴";
+  
+  if(probability>=0 && probability<=0.40){
+    i.style.color = "red"; 
+  }else if(probability>0.40 && probability<=0.60){
+    i.style.color = "yellow";
+  }else{
+    i.style.color = "green";
   }
-  return div;
+
+  i.setAttribute("id", "bulletpoint");
+  
+  return i;
+
 }
 
 function addTag() {
@@ -98,20 +105,36 @@ let googleshopping = async function () {
     revDivCount = reviewDiv.length;
   }
 
-  reviewDiv.forEach((ele) => {
+  reviewDiv.forEach(async (ele) => {
     if (!ele.querySelector("#bulletpoint")) {
-      const rev = ele.querySelector(".v168Le")?.innerText ?? "N/A";
-      sentiment(rev)
-        .then((result) => {
-          if (result == "POSITIVE") {
-            ele.prepend(bulletpoint(true));
-          } else if (result == "NEGATIVE") {
-            ele.prepend(bulletpoint(false));
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      let reviewData = {
+        review : ele.querySelector(".v168Le")?.innerText ?? "N/A"
+      }
+
+      let response;
+      try {
+        response = await axios.post(
+          "http://localhost:5000/analyze",
+          reviewData
+        );
+        console.log("review submitted:");
+      } catch (error) {
+        console.error("Error analyzing review:", error);
+      }
+
+      ele.prepend(bulletpoint(response));
+      // const rev = ele.querySelector(".v168Le")?.innerText ?? "N/A";
+      // sentiment(rev)
+      //   .then((result) => {
+      //     if (result == "POSITIVE") {
+      //       ele.prepend(bulletpoint(true));
+      //     } else if (result == "NEGATIVE") {
+      //       ele.prepend(bulletpoint(false));
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
 
       ele.appendChild(addHTML());
       ele.appendChild(feedbackHTML());

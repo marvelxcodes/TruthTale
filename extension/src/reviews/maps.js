@@ -1,6 +1,6 @@
-import sentiment from "../models/PnNanalysis";
 import errorHTML from "../externalHTML/error";
 import feedbackHTML from "../externalHTML/feedback";
+import axios from "axios";
 
 function addHTML() {
   let div = document.createElement("div");
@@ -34,21 +34,26 @@ function addHTML() {
   return div;
 }
 
-function bulletpoint(bullet) {
-  let div = document.createElement("div");
+function bulletpoint(probability) {
+  let i = document.createElement("i");
 
-  div.setAttribute(
+  i.setAttribute("class", "fa-solid fa-circle");
+  i.setAttribute(
     "style",
     "display: flex; align-items: center; justify-content: end;position :relative ;top:-2px;right:-1px"
   );
-  div.setAttribute("id", "bulletpoint");
 
-  if (bullet) {
-    div.innerText = "🟢";
+  if (probability >= 0 && probability <= 0.4) {
+    i.style.color = "red";
+  } else if (probability > 0.4 && probability <= 0.6) {
+    i.style.color = "yellow";
   } else {
-    div.innerText = "🔴";
+    i.style.color = "green";
   }
-  return div;
+
+  i.setAttribute("id", "bulletpoint");
+
+  return i;
 }
 
 function addTag() {
@@ -63,26 +68,92 @@ function addTag() {
   head.appendChild(link);
 }
 
+function hoverEffect(reviewDiv ,reason) {
+  const reviewReason = document.createElement("div");
+  reviewReason.classList.add("review-reason");
+  reviewReason.textContent = `Reason: "${reason}"`;
+
+  reviewDiv.appendChild(reviewReason);
+
+  reviewDiv.addEventListener("mouseenter", () => {
+    reviewReason.style.display = "block";
+  });
+
+  reviewDiv.addEventListener("mouseleave", () => {
+    reviewReason.style.display = "none";
+  });
+  return reviewReason ;
+}
+
+function hoverEffectStyle() {
+  const style = document.createElement("style");
+  style.innerHTML = `
+    .review-reason {
+      display: none;
+      // position: absolute;
+      top: 0;
+      margin: 10px 0;
+      left: 30px;
+      width: 90%;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      z-index: 10000;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 let googleMaps = async function () {
+  hoverEffectStyle();
   addTag();
 
   let allReviews = document.querySelectorAll(".m6QErb");
   let reviewDiv = document.querySelectorAll(".jftiEf");
 
-  reviewDiv.forEach((ele) => {
+  reviewDiv.forEach(async (ele) => {
     if (!ele.querySelector("#bulletpoint")) {
-      const rev = ele.querySelector(".wiI7pd")?.innerText ?? "N/A";
-      sentiment(rev)
-        .then((result) => {
-          if (result == "POSITIVE") {
-            ele.prepend(bulletpoint(true));
-          } else if (result == "NEGATIVE") {
-            ele.prepend(bulletpoint(false));
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      let reviewData = {
+        review: ele.querySelector(".wiI7pd")?.innerText ?? "N/A",
+      };
+
+      let response;
+      try {
+        response = await axios.post(
+          "http://localhost:5000/analyze",
+          reviewData
+        );
+      } catch (error) {
+        console.error("Error analyzing review:");
+      }
+
+      console.log(response.data.probability);
+      ele.prepend(bulletpoint(response.data.probability));
+      ele.appendChild(hoverEffect(ele, response.data.reason));   
+      // ele.parentElement.style.background = "#f003";
+      if (response.data.probability >= 0 && response.data.probability <= 0.4) {
+        ele.style.background = "#f003";
+      }
+      else if (response.data.probability > 0.4 && response.data.probability <= 0.6) {
+        ele.style.background = "#ff03";
+      }
+      else if (response.data.probability > 0.6) {
+        ele.style.background = "#0f03";
+      }
+      // const rev = ele.querySelector(".wiI7pd")?.innerText ?? "N/A";
+      // sentiment(rev)
+      //   .then((result) => {
+      //     if (result == "POSITIVE") {
+      //       ele.prepend(bulletpoint(true));
+      //     } else if (result == "NEGATIVE") {
+      //       ele.prepend(bulletpoint(false));
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
 
       ele.appendChild(addHTML());
       ele.appendChild(feedbackHTML());
