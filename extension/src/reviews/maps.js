@@ -133,6 +133,7 @@ let googleMaps = async function () {
       ele.prepend(bulletpoint(response.data.probability));
       ele.appendChild(hoverEffect(ele, response.data.reason));   
       // ele.parentElement.style.background = "#f003";
+
       if (response.data.probability >= 0 && response.data.probability <= 0.4) {
         ele.style.background = "#f003";
       }

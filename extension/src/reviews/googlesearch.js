@@ -84,33 +84,73 @@ function addTag() {
   head.appendChild(link);
 }
 
+function hoverEffect(reviewDiv ,reason) {
+  const reviewReason = document.createElement("div");
+  reviewReason.classList.add("review-reason");
+  reviewReason.textContent = `Reason: "${reason}"`;
+
+  reviewDiv.appendChild(reviewReason);
+
+  reviewDiv.addEventListener("mouseenter", () => {
+    reviewReason.style.display = "block";
+  });
+
+  reviewDiv.addEventListener("mouseleave", () => {
+    reviewReason.style.display = "none";
+  });
+  return reviewReason ;
+}
+
+function hoverEffectStyle() {
+  const style = document.createElement("style");
+  style.innerHTML = `
+    .review-reason {
+      display: none;
+      // position: absolute;
+      top: 0;
+      margin: 10px;
+      left: 30px;
+      width: 90%;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      z-index: 10000;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+
 let googlesearch = async function scrapeReviews() {
+  hoverEffectStyle();
   addTag();
-  let revDivCount = 0;
+  // let revDivCount = 0;
 
   let reviewDiv = document.querySelectorAll(".z6XoBf");
   let reviewDivA = document.querySelectorAll("._-is");
 
-  while (true) {
-    reviewDiv = document.querySelectorAll(".z6XoBf");
-    reviewDivA = document.querySelectorAll("._-is");
+  // while (true) {
+  //   reviewDiv = document.querySelectorAll(".z6XoBf");
+  //   reviewDivA = document.querySelectorAll("._-is");
 
-    await clickButton(".sh-fp__pagination-button", "More Reviews");
+  //   await clickButton(".sh-fp__pagination-button", "More Reviews");
 
-    console.log(reviewDiv.length + reviewDivA.length);
+  //   console.log(reviewDiv.length + reviewDivA.length);
 
-    if (
-      revDivCount === reviewDiv.length + reviewDivA.length ||
-      reviewDiv.length + reviewDivA.length > 100
-    ) {
-      break;
-    }
+  //   if (
+  //     revDivCount === reviewDiv.length + reviewDivA.length ||
+  //     reviewDiv.length + reviewDivA.length > 100
+  //   ) {
+  //     break;
+  //   }
 
-    revDivCount = reviewDiv.length + reviewDivA.length;
-  }
+  //   revDivCount = reviewDiv.length + reviewDivA.length;
+  // }
 
   reviewDiv.forEach(async (ele) => {
-    if (!ele.querySelector("#bulletpoint")) {
+    if (ele.style.padding !== "1rem") {
       let reviewData = {
         review : ele.querySelector(".g1lvWe")?.innerText ?? "N/A"
       }
@@ -126,7 +166,20 @@ let googlesearch = async function scrapeReviews() {
         console.error("Error analyzing review:",error);
       }
 
-      ele.prepend(bulletpoint(response.data.probability));
+      // ele.prepend(bulletpoint(response.data.probability));
+      ele.appendChild(hoverEffect(ele, response.data.reason));   
+      // ele.parentElement.style.background = "#f003";
+      ele.style.padding = "1rem";
+      ele.style.borderRadius = "1rem";
+      if (response.data.probability >= 0 && response.data.probability <= 0.4) {
+        ele.style.background = "#f003";
+      }
+      else if (response.data.probability > 0.4 && response.data.probability <= 0.6) {
+        ele.style.background = "#ff03";
+      }
+      else if (response.data.probability > 0.6) {
+        ele.style.background = "#0f03";
+      }
       // const revA = ele.querySelector(".g1lvWe")?.innerText ?? "N/A";
       // sentiment(revA)
       //   .then((result) => {
@@ -146,7 +199,7 @@ let googlesearch = async function scrapeReviews() {
     }
   });
   reviewDivA.forEach(async (ele) => {
-    if (!ele.querySelector("#bulletpoint")) {
+    if (ele.style.padding !== "1rem") {
       let reviewData = {
         review : ele.querySelector("._-i1")?.innerText ?? "N/A"
       }
@@ -162,7 +215,20 @@ let googlesearch = async function scrapeReviews() {
         console.error("Error analyzing review:");
       }
 
-      ele.prepend(bulletpoint(response.data.probability));
+      // ele.prepend(bulletpoint(response.data.probability));
+      ele.appendChild(hoverEffect(ele, response.data.reason));   
+      // ele.parentElement.style.background = "#f003";
+      ele.style.padding = "1rem";
+      ele.style.borderRadius = "1rem";
+      if (response.data.probability >= 0 && response.data.probability <= 0.4) {
+        ele.style.background = "#f003";
+      }
+      else if (response.data.probability > 0.4 && response.data.probability <= 0.6) {
+        ele.style.background = "#ff03";
+      }
+      else if (response.data.probability > 0.6) {
+        ele.style.background = "#0f03";
+      }
       // const revA = ele.querySelector("._-i1")?.innerText ?? "N/A";
       // sentiment(revA)
       //   .then((result) => {

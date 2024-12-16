@@ -84,29 +84,70 @@ function addTag() {
   head.appendChild(link);
 }
 
+function hoverEffect(reviewDiv ,reason) {
+  const reviewReason = document.createElement("div");
+  reviewReason.classList.add("review-reason");
+  reviewReason.textContent = `Reason: "${reason}"`;
+
+  reviewDiv.appendChild(reviewReason);
+
+  reviewDiv.addEventListener("mouseenter", () => {
+    reviewReason.style.display = "block";
+  });
+
+  reviewDiv.addEventListener("mouseleave", () => {
+    reviewReason.style.display = "none";
+  });
+  return reviewReason ;
+}
+
+function hoverEffectStyle() {
+  const style = document.createElement("style");
+  style.innerHTML = `
+    .review-reason {
+      display: none;
+      // position: absolute;
+      top: 0;
+      margin: 10px 0;
+      left: 30px;
+      width: 90%;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      color: black;
+      z-index: 10000;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+
 let googleshopping = async function () {
+  hoverEffectStyle();
   addTag();
-  let revDivCount = 0;
+  // let revDivCount = 0;
 
   let allReviews = document.querySelector(".x38CKc");
   let reviewDiv = document.querySelectorAll(".wKtRYe");
 
-  while (true) {
-    reviewDiv = document.querySelectorAll(".wKtRYe");
+  // while (true) {
+  //   reviewDiv = document.querySelectorAll(".wKtRYe");
 
-    await clickButton(allReviews, ".ZWyJzc", "More Reviews");
+  //   await clickButton(allReviews, ".ZWyJzc", "More Reviews");
 
-    console.log(reviewDiv.length);
+  //   console.log(reviewDiv.length);
 
-    if (revDivCount === reviewDiv.length || reviewDiv.length > 100) {
-      break;
-    }
+  //   if (revDivCount === reviewDiv.length || reviewDiv.length > 100) {
+  //     break;
+  //   }
 
-    revDivCount = reviewDiv.length;
-  }
+  //   revDivCount = reviewDiv.length;
+  // }
 
   reviewDiv.forEach(async (ele) => {
-    if (!ele.querySelector("#bulletpoint")) {
+    if (ele.style.padding !== "1rem") {
       let reviewData = {
         review : ele.querySelector(".v168Le")?.innerText ?? "N/A"
       }
@@ -122,7 +163,20 @@ let googleshopping = async function () {
         console.error("Error analyzing review:", error);
       }
 
-      ele.prepend(bulletpoint(response));
+      // ele.prepend(bulletpoint(response));
+      ele.appendChild(hoverEffect(ele, response.data.reason));   
+      // ele.parentElement.style.background = "#f003";
+      ele.style.padding = "1rem";
+      ele.style.borderRadius = "1rem";
+      if (response.data.probability >= 0 && response.data.probability <= 0.4) {
+        ele.style.background = "#f003";
+      }
+      else if (response.data.probability > 0.4 && response.data.probability <= 0.6) {
+        ele.style.background = "#ff03";
+      }
+      else if (response.data.probability > 0.6) {
+        ele.style.background = "#0f03";
+      }
       // const rev = ele.querySelector(".v168Le")?.innerText ?? "N/A";
       // sentiment(rev)
       //   .then((result) => {
