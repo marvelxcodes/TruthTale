@@ -2,12 +2,14 @@ import axios from "axios";
 
 let errorHTML = ({ review, Class }) => {
   // Create modal background
+  const useless = document.querySelector(".xYaHl.mrNCk");
+  useless.style.zIndex = "100";
   const modal = document.createElement("div");
   modal.id = "reportPopup";
   modal.classList.add("modal");
   modal.style.display = "none";
   modal.style.position = "fixed";
-  modal.style.zIndex = "1";
+  modal.style.zIndex = "10001";
   modal.style.left = "0";
   modal.style.top = "0";
   modal.style.width = "100%";
